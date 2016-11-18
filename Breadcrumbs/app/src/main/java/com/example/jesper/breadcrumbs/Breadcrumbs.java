@@ -55,7 +55,6 @@ public class Breadcrumbs extends LinearLayout {
 		TextView defaultTextView = new TextView(context);
 		defaultLinkColor = defaultTextView.getCurrentTextColor();
 		defaultPaintFlags = defaultTextView.getPaintFlags();
-
 	}
 
 	// Adds a breadcrumb to the current trail
@@ -63,7 +62,6 @@ public class Breadcrumbs extends LinearLayout {
 
 		// If its not the first item add a separator and make the last breadcrumb clickable
 		if(!trail.empty()) {
-
 			// Make last breadcrumb clickable
 			TextView lastView = getLastView();
 			setViewClickable(lastView, true);
@@ -80,7 +78,6 @@ public class Breadcrumbs extends LinearLayout {
 		TextView text = new TextView(context);
 		text.setText(breadcrumb);
 		text.setTextSize(fontSize);
-		//text.setDuplicateParentStateEnabled(true);
 		addView(text);
 
 		// and also to the stack
@@ -101,7 +98,7 @@ public class Breadcrumbs extends LinearLayout {
 	// Removes all breadcrumbs after the given string
 	public void removeAllAfter(String start) {
 
-		// Remove all breadcrumbs till we find the given right
+		// Remove all breadcrumbs till we find the given string
 		while(!trail.peek().equals(start))
 			removeLast();
 
@@ -110,34 +107,41 @@ public class Breadcrumbs extends LinearLayout {
 
 	}
 
-
+	// Returns the last view in the layout
 	private TextView getLastView() {
 		return (TextView) getChildAt(getChildCount() - 1);
 	}
 
+	// Make a breadcrumb clickable/not clickable
 	private void setViewClickable(TextView view, boolean shouldBeClickable) {
 
 		if(shouldBeClickable) {
-
+			// What should happen when the breadcrumb is clicked
 			view.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View view) {
+					// Get the text from the breadcrumb
 					String text = ((TextView) view).getText().toString();
-					removeAllAfter(text);
+					removeAllAfter(text); // Remove everything after the breadcrumb
 
+					// If the user has set the listener
 					if(onNavListener != null) {
 						int hierarchyPos = trail.size() - 1;
-						String[] fullPath = getFullPath();
+						String[] fullPath = getTrail();
 
+						// Send info to the user that the trail has changed and what was clicked
 						onNavListener.onNavigate(text, hierarchyPos, fullPath);
 					}
 				}
 			});
 
+			// Change the look of the breadcrumb
 			view.setTextColor(linkColor);
 			view.setPaintFlags(view.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 		} else {
+			// Remove the functionally of the link
 			view.setOnClickListener(null);
+			// Reset the look of the breadcrumb (default textview)
 			view.setTextColor(defaultLinkColor);
 			view.setPaintFlags(defaultPaintFlags);
 		}
@@ -146,25 +150,29 @@ public class Breadcrumbs extends LinearLayout {
 	}
 
 
-
+	// Sets a listener that activates when a breadcrumb is pressed
 	public void setOnNavigationListener(OnNavigationListener onNavListener) {
 		this.onNavListener = onNavListener;
 	}
 
-	public String[] getFullPath() {
+	// Get the current trail (path from start to current)
+	public String[] getTrail() {
 		String [] fullPath = new String[trail.size()];
 		trail.toArray(fullPath);
 		return fullPath;
 	}
 
+	// Sets the separator between the breadcrumbs
 	public void setSeparator(String separator) {
 		this.separator = separator;
 	}
 
+	// Returns if the trail has breadcrumbs
 	public boolean hasBreadcrumbs() {
 		return !trail.empty();
 	}
 
+	// Checks if the trail contain a certain breadcrumb
 	public boolean contains(String breadcrumb) {
 		return trail.contains(breadcrumb);
 	}

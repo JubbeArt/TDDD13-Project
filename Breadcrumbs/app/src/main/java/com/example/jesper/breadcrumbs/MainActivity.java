@@ -25,11 +25,15 @@ public class MainActivity extends AppCompatActivity {
 		breadcrumbs = (Breadcrumbs) findViewById(R.id.breadcrumbs);
 		buttonHolder = (LinearLayout) findViewById(R.id.navButtons);
 
+		// Load in data about the world
 		allLevels = createData();
 		String root = "Earth";
+		// Set the first breadcrumb to be the root
 		breadcrumbs.addBreadcrumb(root);
+		// Create buttons that navigate forward
 		updateButtons(root, 0);
 
+		// Set a listener that updates the button when a breadcrumb is pressed
 		breadcrumbs.setOnNavigationListener(new OnNavigationListener() {
 			@Override
 			public void onNavigate(String breadcrumbName, int hierarchyLevel, String[] fullPath) {
@@ -38,25 +42,29 @@ public class MainActivity extends AppCompatActivity {
 		});
 	}
 
+	// Updates the buttons that navigate forward in the hierarchy
 	public void updateButtons(String key, final int level) {
-		buttonHolder.removeAllViews();
+		buttonHolder.removeAllViews(); // Remove old buttons
 
-		if(level >= allLevels.size())
+		if(level >= allLevels.size()) // Cannot have any children
 			return;
 
-		if(!allLevels.get(level).containsKey(key))
+		if(!allLevels.get(level).containsKey(key)) // Others have children on this level, but this one dont
 			return;
 
+		// Get all the children for the current breadcrumb
 		String[] children = allLevels.get(level).get(key);
 
+		// Add buttons for the children
 		for(final String child : children) {
 			Button button = new Button(this);
 			button.setText(child);
 			button.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					breadcrumbs.addBreadcrumb(child);
-					updateButtons(child, level + 1);
+					// Has clicked a button to go forward
+					breadcrumbs.addBreadcrumb(child); // Add the breadcrumb
+					updateButtons(child, level + 1); // Get the children for this child (if they exists)
 				}
 			});
 
