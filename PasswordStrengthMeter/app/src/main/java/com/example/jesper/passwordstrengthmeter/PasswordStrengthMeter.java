@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -156,9 +157,24 @@ public class PasswordStrengthMeter extends LinearLayout {
 		this.textRepresentations = textRepresentations;
 	}
 
+	// Changes the current color of the text strengths
+	public void setStrengthColors(List<Integer> strengthColors) {
+		this.strengthColors = strengthColors;
+	}
+
 	// Changes set text for the checkbox to show password
 	public void setShowPasswordText(String text) {
 		showPasswordText.setText(text);
+	}
+
+	//
+	public void setShowPassword(boolean showPasswordButton) {
+		int visible = showPasswordButton ? View.VISIBLE : View.INVISIBLE;
+
+		showPassword.setVisibility(visible);
+		showPasswordText.setVisibility(visible);
+
+
 	}
 
 	// Changes the algorithm for checking the password

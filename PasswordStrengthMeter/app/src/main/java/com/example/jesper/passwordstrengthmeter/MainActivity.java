@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 		swedish.setShowPasswordText(showPassword);
 		swedish.setMaxStrength(2); // Go from 4 (default) levels of strength to 2
 
+		swedish.setShowPassword(false);
+
 		// Change the algorithm for the view
 		swedish.setAlgorithm(new PasswordStrengthAlgorithm() {
 			@Override
